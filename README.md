@@ -65,3 +65,4 @@ functions/api/        GitHub login helper for the CMS (Cloudflare Pages Function
 
 For the CMS login, add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` as environment variables,
 and keep `repo:` in `public/admin/config.yml` set to `seyramdesouza/ananke-website`.
+# ananke-website
