@@ -199,6 +199,8 @@ const panels = [
     display: flex;
     align-items: flex-end;
     min-height: 100svh;
+    /* Keep hero content clear of the fixed header on short screens. */
+    padding-top: calc(var(--header-h) + 1.5rem);
     background: var(--forest);
     color: var(--cream);
     overflow: hidden;
