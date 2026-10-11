@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: seyramdesouza/ananke-website # TODO: replace with the real GitHub owner/repository
+  repo: seyramdesouza/ananke-website
   branch: main
   base_url: https://anankeprojects.com
   auth_endpoint: /api/auth
