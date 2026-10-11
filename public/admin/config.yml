@@ -219,6 +219,22 @@ collections:
           - { label: Theme, name: theme, widget: string, required: false }
           - { label: Deadline, name: deadline, widget: datetime, time_format: false, required: false }
           - { label: Extra note, name: note, widget: text, required: false }
+      - name: submissions
+        label: Submission Guidelines
+        file: src/content/settings/submissions.json
+        format: json
+        fields:
+          - { label: Intro, name: intro, widget: text }
+          - { label: What we accept, name: accept, widget: list, hint: "One item per line" }
+          - { label: Limits (word counts, number of images…), name: limits, widget: list, required: false, hint: "Leave empty to show: limits will be published with each open call" }
+          - { label: Submission email, name: email, widget: string, required: false, hint: "Leave empty to use the site's contact email" }
+          - { label: Email subject line, name: subjectLine, widget: string, required: false }
+          - { label: What to include, name: include, widget: list }
+          - { label: File formats, name: formats, widget: list, required: false, hint: 'e.g. "Text: .docx or PDF"' }
+          - { label: Rights, name: rights, widget: text, required: false, hint: "Previously published work, simultaneous submissions, rights retained by the author" }
+          - { label: Fees and contributor copies, name: fees, widget: text, required: false }
+          - { label: Response time, name: responseTime, widget: string, required: false, hint: 'A full sentence, e.g. "We aim to respond within eight weeks of the deadline."' }
+          - { label: Books and other enquiries, name: otherEnquiries, widget: text }
       - name: site
         label: Site Settings
         file: src/content/settings/site.json
