@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../../components/PageHeader.astro';
+import PersonCard from '../../../../components/PersonCard.astro';
+import ArrowLink from '../../../../components/ArrowLink.astro';
+import { INTERSTICE } from '../../../../data/navigation';
+
+const editors = (await getCollection('people', ({ data }) => data.roles.includes('Editor'))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title="Editorial Team — Interstice"
+  description="The editorial team of Interstice: A Journal of Unfinished Ideas and Emergent Practice."
+  interstice
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects/' },
+    { label: 'Publications', href: '/projects/publications/' },
+    { label: 'Interstice', href: INTERSTICE },
+    { label: 'Editorial Team' },
+  ]}
+>
+  <PageHeader eyebrow="Interstice" title="Editorial Team" />
+
+  <section class="container">
+    <p class="prose">
+      Interstice is shaped through a collaborative editorial process. Our editorial team brings together perspectives
+      from curatorial practice, cultural management, writing and the arts.
+    </p>
+  </section>
+
+  <section class="section container">
+    <div class="grid-3">
+      {
+        editors.map((person) => (
+          <PersonCard person={person} size="large">
+            {person.data.roles.includes('Founder') && (
+              <p class="founder-link">
+                <a href="/about/founder/">Founder of Ananke Projects</a>
+              </p>
+            )}
+          </PersonCard>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container">
+    <ArrowLink href={`${INTERSTICE}issues/issue-1-2026/`} variant="solid">Read the Issue</ArrowLink>
+  </section>
+</BaseLayout>
+
+<style>
+  .founder-link {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
+</style>

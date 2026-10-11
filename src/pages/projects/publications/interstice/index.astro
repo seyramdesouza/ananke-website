@@ -1,0 +1,330 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ArrowLink from '../../../../components/ArrowLink.astro';
+import IssueCover from '../../../../components/IssueCover.astro';
+import IssueCard from '../../../../components/IssueCard.astro';
+import { INTERSTICE } from '../../../../data/navigation';
+
+const issues = (await getCollection('issues')).sort((a, b) => b.data.number - a.data.number);
+const current = issues.find((i) => i.data.status === 'published');
+const currentWorks = current ? await getCollection('works', ({ data }) => data.issue.id === current.id) : [];
+const currentContributors = new Set(currentWorks.flatMap((w) => w.data.contributors.map((c) => c.id)));
+---
+
+<BaseLayout
+  title="Interstice"
+  description="Interstice: A Journal of Unfinished Ideas and Emergent Practice, published by Ananke Editions."
+  interstice
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects/' },
+    { label: 'Publications', href: '/projects/publications/' },
+    { label: 'Interstice' },
+  ]}
+>
+  <header class="masthead container">
+    <p class="eyebrow eyebrow--accent">Ananke Editions</p>
+    <h1 class="masthead-title">Interstice</h1>
+    <p class="masthead-subtitle">A Journal of Unfinished Ideas and Emergent Practice</p>
+    <div class="masthead-foot">
+      <p class="marginalia">
+        Interstice is built around the belief that unfinished work is not without value.
+      </p>
+      <p class="lead masthead-statement">
+        A publication devoted to the fragments, experiments, drafts and unfinished thoughts that exist between an idea
+        and what it eventually becomes.
+      </p>
+    </div>
+  </header>
+
+  {
+    current && (
+      <section class="section container" aria-labelledby="current-issue">
+        <div class="current" data-reveal>
+          <a href={`${INTERSTICE}issues/${current.id}/`} class="current-cover" tabindex="-1" aria-hidden="true">
+            <IssueCover numeral={current.data.numeral} year={current.data.year} cover={current.data.cover} alt={current.data.coverAlt} />
+          </a>
+          <div>
+            <p class="eyebrow eyebrow--accent">Current issue</p>
+            <h2 id="current-issue" class="current-title">{current.data.label}</h2>
+            <div class="prose current-text">
+              <p>{current.data.summary}</p>
+              {current.data.standfirst && <p>{current.data.standfirst}</p>}
+            </div>
+            <dl class="facts current-facts">
+              <div><dt>Works</dt><dd>{currentWorks.length}</dd></div>
+              <div><dt>Contributors</dt><dd>{currentContributors.size}</dd></div>
+              {current.data.place && <div><dt>Published in</dt><dd>{current.data.place}</dd></div>}
+            </dl>
+            {current.data.sections.length > 0 && (
+              <ol class="section-chips" role="list" aria-label="Sections">
+                {current.data.sections.map((s, i) => (
+                  <li><span>{i + 1}</span> {s}</li>
+                ))}
+              </ol>
+            )}
+            <div class="current-actions">
+              <ArrowLink href={`${INTERSTICE}issues/${current.id}/`} variant="solid">
+                Explore the Issue
+              </ArrowLink>
+              {current.data.pdf && (
+                <ArrowLink href={current.data.pdf} download={current.data.pdf.split('/').pop()}>
+                  Download PDF{current.data.pdfSize && ` (${current.data.pdfSize})`}
+                </ArrowLink>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- From the editor's note -->
+  <section class="section born" aria-labelledby="born-title">
+    <div class="container born-inner" data-reveal>
+      <p class="eyebrow born-eyebrow">From the Editor's Note</p>
+      <p class="born-lead">There is something profoundly human about unfinished things.</p>
+      <p class="born-question">
+        What if the fragment carries as much truth as the finished work? What if the sketch, the abandoned draft, the
+        half-written poem, the photograph left uncropped, the thought that never fully arrived… what if these things
+        matter just as deeply as what eventually becomes final?
+      </p>
+      <h2 id="born-title" class="born-title">Interstice was born from that question.</h2>
+      <p class="born-sign">— Seyram Klu De-Souza, Founder &amp; Chief Editor</p>
+      {current && <ArrowLink href={`${INTERSTICE}issues/${current.id}/#editors-note`} variant="light">Read the full note</ArrowLink>}
+    </div>
+  </section>
+
+  <section class="section container" aria-labelledby="issues-title">
+    <div class="section-head">
+      <h2 id="issues-title" class="section-title">Issues</h2>
+      <ArrowLink href={`${INTERSTICE}issues/`}>All issues</ArrowLink>
+    </div>
+    <div class="issues-grid">
+      {issues.map((issue) => <IssueCard issue={issue} />)}
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="teasers">
+      <article>
+        <p class="eyebrow">Contributors</p>
+        <p class="teaser-text">
+          Interstice is built around the belief that unfinished work is not without value.
+        </p>
+        <ArrowLink href={`${INTERSTICE}contributors/`}>Meet the contributors</ArrowLink>
+      </article>
+      <article>
+        <p class="eyebrow">Editorial Team</p>
+        <p class="teaser-text">Interstice is shaped through a collaborative editorial process.</p>
+        <ArrowLink href={`${INTERSTICE}editorial-team/`}>Meet the editorial team</ArrowLink>
+      </article>
+      <article>
+        <p class="eyebrow">Submit</p>
+        <p class="teaser-text">Share a fragment, a question, an image, a poem or a work still becoming.</p>
+        <ArrowLink href="/projects/publications/submissions/">Submission guidelines</ArrowLink>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .masthead {
+    padding-block: var(--space-l);
+    border-bottom: 1px solid var(--interstice);
+  }
+
+  .masthead-title {
+    font-size: clamp(4rem, 1.5rem + 12vw, 12rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--interstice);
+  }
+
+  .masthead-subtitle {
+    font-size: var(--step-1);
+    font-weight: 500;
+    margin-top: 1.5rem;
+  }
+
+  .masthead-foot {
+    display: grid;
+    gap: var(--space-m);
+    margin-top: var(--space-m);
+    align-items: end;
+  }
+
+  @media (min-width: 56rem) {
+    .masthead-foot {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    }
+  }
+
+  .masthead-statement {
+    max-width: 32ch;
+    margin: 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: var(--step-3);
+    line-height: 1.12;
+  }
+
+  .current {
+    display: grid;
+    gap: var(--space-m);
+    align-items: center;
+  }
+
+  @media (min-width: 48rem) {
+    .current {
+      grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+      gap: var(--space-l);
+    }
+  }
+
+  .current-cover {
+    display: block;
+    max-width: 20rem;
+  }
+
+  .current-title {
+    font-size: var(--step-4);
+  }
+
+  .current-text {
+    margin: 1.5rem 0 2rem;
+  }
+
+  .current-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+  }
+
+  .current-facts {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .section-chips li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.35rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .section-chips span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--interstice);
+    color: #fff;
+    font-size: 0.8rem;
+  }
+
+  /* From the editor's note */
+  .born {
+    background: var(--interstice);
+    color: #fff;
+    text-align: center;
+  }
+
+  .born-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .born-eyebrow {
+    color: rgb(255 255 255 / 0.8);
+  }
+
+  .born-lead {
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--step-4);
+    line-height: 1.02;
+    max-width: 18ch;
+    margin-bottom: var(--space-m);
+  }
+
+  .born-question {
+    font-size: var(--step-1);
+    max-width: 40rem;
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .born-title {
+    font-size: var(--step-3);
+    margin: var(--space-m) 0 0.75rem;
+  }
+
+  .born-sign {
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.8);
+    margin-bottom: 2rem;
+  }
+
+  .born :focus-visible {
+    outline-color: #fff;
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: var(--space-m);
+  }
+
+  .section-head .section-title {
+    margin: 0;
+  }
+
+  .issues-grid {
+    display: grid;
+    gap: var(--space-m);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .teasers {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  @media (min-width: 48rem) {
+    .teasers {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .teasers article {
+    border-top: 1px solid var(--interstice);
+    padding-top: 1.25rem;
+  }
+
+  .teaser-text {
+    font-size: var(--step-1);
+    margin-bottom: 1.5rem;
+  }
+</style>

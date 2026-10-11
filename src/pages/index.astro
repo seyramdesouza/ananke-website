@@ -1,0 +1,628 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+import IssueCover from '../components/IssueCover.astro';
+import PersonCard from '../components/PersonCard.astro';
+import Logo from '../components/Logo.astro';
+import site from '../content/settings/site.json';
+import { INTERSTICE } from '../data/navigation';
+import { principles } from '../data/principles';
+
+const issue = await getEntry('issues', 'issue-1-2026');
+const editors = (await getCollection('people', ({ data }) => data.roles.includes('Editor'))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const panels = [
+  {
+    title: 'Curating',
+    text: 'We develop exhibitions and cultural projects that create encounters between artworks, people, histories and ideas.',
+    href: '/projects/exhibitions/',
+    link: 'Exhibitions',
+    tone: 'forest',
+  },
+  {
+    title: 'Publishing',
+    text: 'Through Ananke Editions, we create independent publications that give space to emerging voices, experimental practices and ideas that might otherwise remain at the margins.',
+    href: '/projects/publications/',
+    link: 'Ananke Editions',
+    tone: 'sage',
+  },
+  {
+    title: 'Community',
+    text: 'We create participatory projects that bring people into cultural conversations: not simply as audiences, but as contributors to them.',
+    href: '/projects/community/',
+    link: 'Community Projects',
+    tone: 'orange',
+  },
+];
+---
+
+<BaseLayout overlayHeader>
+  <!-- Hero ---------------------------------------------------------------- -->
+  <section class="hero" data-hero aria-labelledby="hero-title">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <Logo size="min(78svh, 72vw)" class="hero-mark" />
+    <div class="container hero-inner">
+      <div class="hero-labels">
+        <p>
+          <span>Independent cultural initiative</span>
+          <span class="hero-tagline">{site.tagline}</span>
+        </p>
+        <p class="hero-labels-end">
+          <span>Curating · Publishing</span>
+          <span>Research · Community</span>
+        </p>
+      </div>
+      <h1 id="hero-title" class="hero-title">
+        <span>Ananke</span> <span>Projects</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- About --------------------------------------------------------------- -->
+  <section class="section container about" aria-labelledby="about-title">
+    <div class="about-head">
+      <h2 id="about-title" class="section-heading">About us</h2>
+      <p class="about-greek" aria-hidden="true">Ἀνάγκη</p>
+    </div>
+    <div class="about-body" data-reveal>
+      <p class="about-lead">
+        {site.description} Ananke Projects creates spaces for ideas, stories and creative practices to encounter one
+        another. We are interested in what culture preserves, what it forgets, what remains unfinished, and what becomes
+        possible when we look again.
+      </p>
+      <div class="about-actions">
+        <ArrowLink href="/about/" variant="solid">About Ananke</ArrowLink>
+        <ArrowLink href="/projects/">Explore our projects</ArrowLink>
+      </div>
+    </div>
+    <dl class="facts about-facts" data-reveal>
+      <div><dt>Founded by</dt><dd><a href="/about/founder/">Seyram Klu De-Souza</a></dd></div>
+      <div><dt>Based in</dt><dd>{site.location}</dd></div>
+      <div><dt>Publishing imprint</dt><dd><a href="/projects/publications/">Ananke Editions</a></dd></div>
+      <div><dt>Journal</dt><dd><a href={INTERSTICE}>Interstice, since 2026</a></dd></div>
+      <div><dt>Follow</dt><dd><a href={site.instagram} target="_blank" rel="noopener">{site.instagramHandle}</a></dd></div>
+    </dl>
+  </section>
+
+  <!-- What we do: sticky stacked panels ----------------------------------- -->
+  <section class="what" aria-labelledby="what-title">
+    <div class="container">
+      <h2 id="what-title" class="section-heading what-heading">What we do</h2>
+    </div>
+    <div class="panels">
+      {
+        panels.map((p, i) => (
+          <article class:list={['panel', `panel--${p.tone}`]} style={`--i: ${i}`}>
+            <div class="container panel-inner">
+              <span class="panel-num">0{i + 1}</span>
+              <h3 class="panel-title">{p.title}</h3>
+              <p class="panel-text">{p.text}</p>
+              <ArrowLink href={p.href} variant={p.tone === 'forest' ? 'light' : 'solid'}>
+                {p.link}
+              </ArrowLink>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Interstice ---------------------------------------------------------- -->
+  <section class="interstice theme-interstice" aria-labelledby="interstice-title">
+    <div class="container">
+      <p class="eyebrow eyebrow--accent interstice-eyebrow">Featured publication</p>
+      <h2 id="interstice-title" class="interstice-title">Interstice</h2>
+      <p class="interstice-sub">A Journal of Unfinished Ideas and Emergent Practice</p>
+
+      <div class="interstice-grid">
+        <a href={INTERSTICE} class="interstice-cover" tabindex="-1" aria-hidden="true" data-reveal>
+          {issue && <IssueCover numeral={issue.data.numeral} year={issue.data.year} cover={issue.data.cover} alt={issue.data.coverAlt} />}
+        </a>
+        <div class="interstice-text" data-reveal style="--reveal-delay: 120ms">
+          <p class="lead">
+            A publication devoted to the fragments, experiments, drafts and unfinished thoughts that exist between an
+            idea and what it eventually becomes.
+          </p>
+          <p class="marginalia">
+            Issue I, 2026 — unfinished poems, abandoned images, sketches, marginalia, visual traces and works still
+            searching for their final form.
+          </p>
+          <div class="interstice-actions">
+            <ArrowLink href={INTERSTICE} variant="solid">Explore Interstice</ArrowLink>
+            <ArrowLink href="/projects/publications/submissions/">Submission guidelines</ArrowLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach: card rail ------------------------------------------------- -->
+  <section class="section approach" aria-labelledby="approach-title">
+    <div class="container rail-head">
+      <h2 id="approach-title" class="section-heading">Our approach</h2>
+      <ArrowLink href="/about/approach/">Read our approach</ArrowLink>
+    </div>
+    <div class="rail-wrap">
+      <ol class="rail container" role="list">
+        {
+          principles.map((p, i) => (
+            <li class:list={['card', `card--${i % 2 ? 'cream' : 'sage'}`]}>
+              <span class="card-tag">0{i + 1}</span>
+              <h3 class="card-title">{p.name}</h3>
+              <p class="card-text">{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Editorial team ------------------------------------------------------ -->
+  <section class="section container team" aria-labelledby="team-title">
+    <div class="rail-head">
+      <h2 id="team-title" class="section-heading">Editorial team</h2>
+      <ArrowLink href={`${INTERSTICE}editorial-team/`}>Meet the team</ArrowLink>
+    </div>
+    <div class="team-grid">
+      {editors.map((person) => <PersonCard person={person} compact />)}
+    </div>
+  </section>
+
+  <!-- Quote --------------------------------------------------------------- -->
+  <section class="section container quote" aria-label="Quote">
+    <blockquote class="quote-text" data-reveal>
+      <p>Nothing living was ever meant to be complete. Perhaps the process alone is always enough.</p>
+    </blockquote>
+    <p class="quote-source">— <a href={`${INTERSTICE}issues/issue-1-2026/`}>Interstice, Issue I, 2026</a></p>
+  </section>
+
+  <!-- Closing call to action ---------------------------------------------- -->
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="container cta-inner" data-reveal>
+      <p class="cta-eyebrow">Let's talk</p>
+      <h2 id="cta-title" class="cta-title">Ananke Projects is open to conversations, collaborations and ideas.</h2>
+      <div class="cta-actions">
+        <ArrowLink href="/contact/" variant="solid">Get in touch</ArrowLink>
+        <a class="cta-email" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero ------------------------------------------------------------------ */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    background: var(--forest);
+    color: var(--cream);
+    overflow: hidden;
+  }
+
+  /* Placeholder atmosphere until a hero photo or video is added. */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 55% at 78% 22%, rgb(244 147 32 / 0.28), transparent 70%),
+      radial-gradient(55% 60% at 12% 70%, rgb(140 166 115 / 0.3), transparent 72%),
+      linear-gradient(180deg, #0e2404 0%, #132d07 60%, #0a1b03 100%);
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgb(0 0 0 / 0.35) 100%);
+  }
+
+  .hero :global(.hero-mark) {
+    position: absolute;
+    top: 50%;
+    right: -4vw;
+    transform: translateY(-58%);
+    color: var(--cream);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  @media (max-width: 40rem) {
+    .hero :global(.hero-mark) {
+      right: 50%;
+      transform: translate(50%, -70%);
+    }
+  }
+
+  .hero-inner {
+    position: relative;
+    padding-bottom: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .hero-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: clamp(0.9rem, 0.8rem + 0.3vw, 1.1rem);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-labels p {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .hero-labels-end {
+    text-align: right;
+  }
+
+  .hero-tagline {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--orange);
+  }
+
+  .hero-title {
+    font-weight: 400;
+    /* "ANANKE PROJECTS" is ~8.1em wide: size it to fill the container. */
+    font-size: min(calc((100vw - 2 * var(--gutter)) / 8.3), 9.6rem);
+    line-height: 0.85;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    .hero-title {
+      font-size: 19vw;
+      white-space: normal;
+    }
+
+    .hero-title span {
+      display: block;
+    }
+
+    .hero-labels {
+      flex-direction: column;
+    }
+
+    .hero-labels-end {
+      text-align: left;
+    }
+  }
+
+  /* Shared headings ------------------------------------------------------- */
+  .section-heading {
+    font-size: var(--step-4);
+  }
+
+  .rail-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: var(--space-m);
+  }
+
+  /* About ----------------------------------------------------------------- */
+  .about-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: var(--space-m);
+  }
+
+  .about-greek {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: var(--step-3);
+    color: var(--sage-ink);
+    margin: 0;
+  }
+
+  .about-lead {
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem);
+    line-height: 1.22;
+    font-weight: 450;
+    letter-spacing: -0.015em;
+    max-width: 58rem;
+  }
+
+  .about-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: var(--space-m);
+  }
+
+  .about-facts {
+    margin-top: var(--space-l);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .about-facts a {
+    text-decoration: none;
+  }
+
+  .about-facts a:hover {
+    text-decoration: underline;
+  }
+
+  /* What we do: sticky panels -------------------------------------------- */
+  .what-heading {
+    text-align: center;
+    padding-bottom: var(--space-m);
+  }
+
+  .panel {
+    position: sticky;
+    top: calc(var(--header-h) + var(--i) * 0.9rem);
+    min-height: calc(100svh - var(--header-h) - var(--i) * 0.9rem);
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .panel-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: var(--space-l);
+  }
+
+  .panel--forest {
+    background: var(--forest);
+    color: var(--cream);
+  }
+
+  .panel--sage {
+    background: var(--sage);
+    color: var(--forest);
+  }
+
+  .panel--orange {
+    background: var(--orange);
+    color: var(--forest);
+  }
+
+  .panel-num {
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+
+  .panel-title {
+    font-size: var(--step-giant);
+    line-height: 0.9;
+    margin: 1.5rem 0;
+  }
+
+  .panel-text {
+    font-size: var(--step-1);
+    max-width: 34rem;
+    margin-bottom: 2rem;
+  }
+
+  .panel--forest :focus-visible {
+    outline-color: var(--cream);
+  }
+
+  /* Interstice ------------------------------------------------------------ */
+  .interstice {
+    padding-block: var(--space-l);
+    text-align: center;
+  }
+
+  .interstice-eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .interstice-title {
+    font-size: var(--step-giant);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 0.9;
+    color: var(--interstice);
+  }
+
+  .interstice-sub {
+    font-size: var(--step-1);
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+
+  .interstice-grid {
+    display: grid;
+    gap: var(--space-m);
+    align-items: center;
+    margin-top: var(--space-l);
+    text-align: left;
+  }
+
+  @media (min-width: 48rem) {
+    .interstice-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--space-l);
+    }
+  }
+
+  .interstice-cover {
+    display: block;
+    max-width: 24rem;
+    width: 100%;
+    justify-self: center;
+    transform: rotate(-2deg);
+    filter: drop-shadow(0 30px 30px rgb(14 36 4 / 0.25));
+  }
+
+  .interstice-text .lead {
+    margin-bottom: 1.5rem;
+  }
+
+  .interstice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: 2rem;
+  }
+
+  /* Approach rail --------------------------------------------------------- */
+  .rail-wrap {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    padding-bottom: 1rem;
+  }
+
+  .rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(16rem, 22rem);
+    gap: 1rem;
+    width: max-content;
+    max-width: none;
+    padding-inline: var(--gutter);
+  }
+
+  @media (min-width: 84rem) {
+    .rail {
+      padding-left: calc((100vw - var(--wide)) / 2 + var(--gutter));
+    }
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 26rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    scroll-snap-align: start;
+  }
+
+  .card--sage {
+    background: var(--sage);
+  }
+
+  .card--cream {
+    background: var(--cream-2);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .card-tag {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--cream);
+  }
+
+  .card-title {
+    font-size: var(--step-3);
+    margin-bottom: 1rem;
+  }
+
+  .card-text {
+    font-size: 1.05rem;
+  }
+
+  /* Team ------------------------------------------------------------------ */
+  .team-grid {
+    display: grid;
+    gap: 1.5rem 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+
+  /* Quote ----------------------------------------------------------------- */
+  .quote {
+    text-align: center;
+  }
+
+  .quote-text {
+    margin: 0 auto;
+    max-width: 22ch;
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-weight: 300;
+    font-size: var(--step-4);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .quote-text p::before {
+    content: '“';
+    color: var(--sage);
+  }
+
+  .quote-text p::after {
+    content: '”';
+    color: var(--sage);
+  }
+
+  .quote-source {
+    margin-top: 2rem;
+    font-weight: 500;
+    color: var(--sage-ink);
+  }
+
+  /* CTA ------------------------------------------------------------------- */
+  .cta {
+    background: var(--orange);
+    color: var(--forest);
+    padding-block: var(--space-l);
+  }
+
+  .cta-eyebrow {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .cta-title {
+    font-size: var(--step-4);
+    max-width: 18ch;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: var(--space-m);
+  }
+
+  .cta-email {
+    font-weight: 500;
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .cta :global(.arrow-link--solid:hover),
+  .panel--orange :global(.arrow-link--solid:hover) {
+    background: var(--cream);
+  }
+
+  .cta-email:hover {
+    color: var(--forest);
+    opacity: 0.7;
+  }
+</style>

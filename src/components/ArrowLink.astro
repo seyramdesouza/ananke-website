@@ -1,0 +1,87 @@
+---
+interface Props {
+  href: string;
+  /** solid = forest pill, outline = bordered pill, text = underlined link, light = cream pill for dark backgrounds */
+  variant?: 'solid' | 'outline' | 'text' | 'light';
+  external?: boolean;
+  /** Download the file instead of opening it; pass a string to set the saved file name. */
+  download?: boolean | string;
+}
+
+const { href, variant = 'text', external = false, download } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['arrow-link', `arrow-link--${variant}`]}
+  {...external ? { target: '_blank', rel: 'noopener' } : {}}
+  {...download ? { download: download === true ? '' : download } : {}}
+>
+  <span><slot /></span>
+  <span class="arrow" aria-hidden="true">{download ? '↓' : '→'}</span>
+</a>
+
+<style>
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--forest);
+    white-space: nowrap;
+  }
+
+  .arrow {
+    transition: transform var(--fast) var(--ease);
+  }
+
+  .arrow-link:hover .arrow {
+    transform: translateX(4px);
+  }
+
+  /* Pills */
+  .arrow-link--solid,
+  .arrow-link--outline,
+  .arrow-link--light {
+    min-height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+  }
+
+  .arrow-link--solid {
+    background: var(--forest);
+    color: var(--cream);
+  }
+
+  .arrow-link--outline {
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+
+  .arrow-link--light {
+    background: var(--cream);
+    color: var(--forest);
+  }
+
+  .arrow-link--solid:hover,
+  .arrow-link--outline:hover,
+  .arrow-link--light:hover {
+    background: var(--orange);
+    color: var(--forest);
+    box-shadow: none;
+  }
+
+  /* Text link */
+  .arrow-link--text {
+    min-height: 2.75rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+
+  .arrow-link--text:hover {
+    color: var(--accent);
+  }
+</style>

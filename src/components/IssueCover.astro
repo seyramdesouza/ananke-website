@@ -1,0 +1,144 @@
+---
+/**
+ * A typographic Interstice cover. Used until real cover artwork is uploaded
+ * (set `cover` on the issue and it replaces this).
+ */
+interface Props {
+  numeral: string;
+  year: number;
+  cover?: string;
+  forthcoming?: boolean;
+  alt?: string;
+}
+
+const { numeral, year, cover, forthcoming = false, alt } = Astro.props;
+---
+
+{
+  cover ? (
+    <img
+      class="cover-img"
+      src={cover}
+      alt={alt ?? `Interstice, Issue ${numeral}, ${year} — cover`}
+      width="597"
+      height="843"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <div
+      class:list={['cover', { 'cover--forthcoming': forthcoming }]}
+      role="img"
+      aria-label={alt ?? `Interstice, Issue ${numeral}, ${year}${forthcoming ? ' — forthcoming' : ''}`}
+    >
+      <span class="cover-title">Interstice</span>
+      <span class="cover-sub">A Journal of Unfinished Ideas and Emergent Practice</span>
+      <svg class="cover-marks" viewBox="0 0 200 120" aria-hidden="true" preserveAspectRatio="none">
+        <path d="M8 90 C 40 70, 60 100, 96 78 S 150 40, 192 58" />
+        <path d="M20 104 L 70 104" stroke-dasharray="3 5" />
+        <path d="M120 22 C 130 30, 140 12, 152 24 S 172 30, 180 18" />
+        <circle cx="160" cy="92" r="9" />
+      </svg>
+      <span class="cover-numeral">{numeral}</span>
+      <span class="cover-year">{forthcoming ? `Forthcoming ${year}` : year}</span>
+    </div>
+  )
+}
+
+<style>
+  .cover-img {
+    width: 100%;
+    aspect-ratio: 210 / 297; /* A4, the printed journal's format */
+    object-fit: cover;
+    background: var(--interstice);
+    border-radius: var(--radius);
+  }
+
+  .cover {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    aspect-ratio: 210 / 297;
+    width: 100%;
+    padding: 9% 10%;
+    background: var(--interstice);
+    color: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    container-type: inline-size;
+  }
+
+  /* Deliberately unfinished right edge */
+  .cover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 3.5%;
+    background: repeating-linear-gradient(
+      180deg,
+      var(--cream) 0 3px,
+      transparent 3px 11px
+    );
+    opacity: 0.55;
+  }
+
+  .cover-title {
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-style: italic;
+    font-size: 13cqi;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .cover-sub {
+    font-family: var(--sans);
+    font-size: 4cqi;
+    font-weight: 500;
+    margin-top: 4cqi;
+    max-width: 70%;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  .cover-marks {
+    align-self: center;
+    width: 100%;
+    height: 38%;
+    fill: none;
+    stroke: rgb(255 255 255 / 0.55);
+    stroke-width: 1;
+    stroke-linecap: round;
+  }
+
+  .cover-numeral {
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-size: 34cqi;
+    line-height: 0.85;
+    font-weight: 300;
+  }
+
+  .cover-year {
+    font-family: var(--sans);
+    font-size: 4.2cqi;
+    font-weight: 500;
+    margin-top: 3cqi;
+  }
+
+  .cover--forthcoming {
+    background: transparent;
+    color: var(--interstice);
+    border: 1px dashed var(--interstice);
+  }
+
+  .cover--forthcoming::after {
+    display: none;
+  }
+
+  .cover--forthcoming .cover-marks {
+    stroke: color-mix(in srgb, var(--interstice) 40%, transparent);
+  }
+</style>

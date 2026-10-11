@@ -1,0 +1,81 @@
+---
+import { intersticeNav, normalise, INTERSTICE } from '../data/navigation';
+
+const path = normalise(Astro.url.pathname);
+const isCurrent = (href: string) =>
+  href === INTERSTICE ? path === href : path.startsWith(href);
+---
+
+<nav class="interstice-nav" aria-label="Interstice">
+  <div class="container inner">
+    <a href={INTERSTICE} class="journal-name">Interstice</a>
+    <ul role="list">
+      {
+        intersticeNav.slice(1).map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .interstice-nav {
+    background: var(--interstice);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    min-height: 3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .journal-name {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  ul {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    color: rgb(255 255 255 / 0.85);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a:hover,
+  a[aria-current='page'] {
+    color: #fff;
+  }
+
+  a[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: 0.45em;
+  }
+
+  a:focus-visible {
+    outline-color: #fff;
+  }
+</style>

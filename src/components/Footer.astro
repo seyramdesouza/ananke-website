@@ -1,0 +1,156 @@
+---
+import site from '../content/settings/site.json';
+import Logo from './Logo.astro';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Projects', href: '/projects/' },
+  { label: 'Ananke Editions', href: '/projects/publications/' },
+  { label: 'Interstice', href: '/projects/publications/interstice/' },
+  { label: 'Exhibitions', href: '/projects/exhibitions/' },
+  { label: 'Research', href: '/projects/research/' },
+  { label: 'Community', href: '/projects/community/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <a href="/" class="footer-logo" aria-label="Ananke Projects — home"><Logo size="4.5rem" /></a>
+        <p class="footer-label">{site.tagline}</p>
+        <p class="footer-text">{site.description}</p>
+        <p class="footer-text">{site.location}</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <ul role="list">
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="footer-col footer-col--end">
+        <ul role="list">
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href={site.instagram} target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="/projects/publications/submissions/">Submission guidelines</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer-giant" aria-hidden="true">Ananke Projects</p>
+
+    <div class="footer-bottom">
+      <p>© {year} Ananke Projects · Ananke Editions</p>
+      <p>All rights reserved</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-xl);
+    background: var(--forest);
+    color: var(--cream);
+    overflow: hidden;
+  }
+
+  .site-footer a {
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--orange);
+  }
+
+  .site-footer :focus-visible {
+    outline-color: var(--cream);
+  }
+
+  .footer-top {
+    display: grid;
+    gap: 2.5rem;
+    padding-top: var(--space-l);
+  }
+
+  @media (min-width: 56rem) {
+    .footer-top {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  .footer-logo {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer-label {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-text {
+    max-width: 22rem;
+    color: var(--on-dark-muted);
+  }
+
+  .footer-nav a {
+    display: inline-block;
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    line-height: 1.2;
+    padding-block: 0.1rem;
+  }
+
+  .footer-col ul li + li {
+    margin-top: 0.2rem;
+  }
+
+  .footer-col a {
+    display: inline-block;
+    padding-block: 0.3rem;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 56rem) {
+    .footer-col--end {
+      text-align: right;
+    }
+  }
+
+  .footer-giant {
+    margin: var(--space-l) 0 0;
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-weight: 400;
+    font-size: min(calc((100vw - 2 * var(--gutter)) / 8.35), 9.6rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--on-dark-muted);
+  }
+
+  .footer-bottom p {
+    margin: 0;
+  }
+</style>

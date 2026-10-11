@@ -1,0 +1,41 @@
+---
+interface Props {
+  label: string;
+  publisher?: string;
+  place?: string;
+  issn?: string;
+}
+
+const { label, publisher, place, issn } = Astro.props;
+---
+
+<aside class="colophon" aria-label="Colophon">
+  <p class="eyebrow">Colophon</p>
+  <p><em>Interstice: A Journal of Unfinished Ideas and Emergent Practice</em></p>
+  <p>{label}</p>
+  {publisher && <p>Published independently by {publisher}{place && `, ${place}`}</p>}
+  <p>Ananke Editions, an initiative of Ananke Projects</p>
+  <p>ISSN: {issn ?? 'forthcoming'}</p>
+</aside>
+
+<style>
+  .colophon {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    max-width: 30rem;
+  }
+
+  .colophon p {
+    margin: 0;
+  }
+
+  .colophon .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  em {
+    font-family: var(--display);
+    font-size: 1rem;
+  }
+</style>

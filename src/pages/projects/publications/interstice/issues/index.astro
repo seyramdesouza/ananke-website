@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../../../components/PageHeader.astro';
+import IssueCard from '../../../../../components/IssueCard.astro';
+import { INTERSTICE } from '../../../../../data/navigation';
+
+const issues = (await getCollection('issues')).sort((a, b) => b.data.number - a.data.number);
+---
+
+<BaseLayout
+  title="Issues — Interstice"
+  description="Every issue of Interstice: A Journal of Unfinished Ideas and Emergent Practice."
+  interstice
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects/' },
+    { label: 'Publications', href: '/projects/publications/' },
+    { label: 'Interstice', href: INTERSTICE },
+    { label: 'Issues' },
+  ]}
+>
+  <PageHeader eyebrow="Interstice" title="Issues" />
+
+  <section class="container">
+    <div class="issues-grid">
+      {issues.map((issue) => <IssueCard issue={issue} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .issues-grid {
+    display: grid;
+    gap: var(--space-l) var(--space-m);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    margin-top: var(--space-m);
+  }
+</style>

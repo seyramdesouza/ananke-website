@@ -1,0 +1,125 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import ArrowLink from '../../../components/ArrowLink.astro';
+import IssueCover from '../../../components/IssueCover.astro';
+import { INTERSTICE } from '../../../data/navigation';
+
+const issue = await getEntry('issues', 'issue-1-2026');
+---
+
+<BaseLayout
+  title="Ananke Editions"
+  description="Ananke Editions is the publishing imprint of Ananke Projects."
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Projects', href: '/projects/' }, { label: 'Publications' }]}
+>
+  <PageHeader
+    eyebrow="Publications"
+    title="Ananke Editions"
+    lead="Ananke Editions is the publishing imprint of Ananke Projects."
+  />
+
+  <section class="container">
+    <div class="prose dropcap">
+      <p>It exists for works that ask questions, open conversations and resist the pressure to arrive neatly resolved.</p>
+      <p>
+        Through journals, books and experimental publications, Ananke Editions explores literature, visual culture,
+        cultural memory and emerging creative practice.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container theme-interstice" aria-labelledby="current-publication">
+    <p class="eyebrow">Current Publication</p>
+    <div class="current" data-reveal>
+      <a href={INTERSTICE} class="current-cover" tabindex="-1" aria-hidden="true">
+        {issue && <IssueCover numeral={issue.data.numeral} year={issue.data.year} cover={issue.data.cover} alt={issue.data.coverAlt} />}
+      </a>
+      <div>
+        <h2 id="current-publication" class="current-title"><a href={INTERSTICE}>Interstice</a></h2>
+        <p class="current-subtitle">A Journal of Unfinished Ideas and Emergent Practice</p>
+        <p class="current-text">
+          A publication devoted to the fragments, experiments, drafts and unfinished thoughts that exist between an
+          idea and what it eventually becomes.
+        </p>
+        <ArrowLink href={INTERSTICE}>Explore Interstice</ArrowLink>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="submit-strip">
+      <p class="submit-text">Interested in publishing with Ananke Editions?</p>
+      <ArrowLink href="/projects/publications/submissions/" variant="solid">Submission guidelines</ArrowLink>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .current {
+    display: grid;
+    gap: var(--space-m);
+    align-items: center;
+  }
+
+  @media (min-width: 48rem) {
+    .current {
+      grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+      gap: var(--space-l);
+    }
+  }
+
+  .current-cover {
+    display: block;
+    max-width: 18rem;
+    transform: rotate(-1.5deg);
+    box-shadow: 0 30px 50px -30px rgb(27 26 23 / 0.45);
+    transition: transform var(--slow) var(--ease);
+  }
+
+  .current-cover:hover {
+    transform: rotate(0deg) translateY(-4px);
+  }
+
+  .current-title {
+    font-size: var(--step-5);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .current-title a {
+    color: var(--interstice);
+    text-decoration: none;
+  }
+
+  .current-subtitle {
+    font-size: var(--step-1);
+    color: var(--ink-2);
+    margin-top: 0.5rem;
+  }
+
+  .current-text {
+    max-width: 34rem;
+    margin: 1.5rem 0 2rem;
+    color: var(--ink-2);
+  }
+
+  .submit-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: var(--space-m);
+    background: var(--paper-2);
+    border-radius: var(--radius);
+  }
+
+  .submit-text {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: var(--step-3);
+    margin: 0;
+  }
+</style>

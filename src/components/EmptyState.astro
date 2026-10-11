@@ -1,0 +1,29 @@
+---
+/** Shown where a listing has no entries yet. */
+interface Props {
+  title?: string;
+}
+
+const { title = 'In development' } = Astro.props;
+---
+
+<div class="empty">
+  <p class="eyebrow">{title}</p>
+  <div class="body"><slot /></div>
+</div>
+
+<style>
+  .empty {
+    border: 1px dashed var(--rule);
+    padding: var(--space-m);
+    max-width: var(--measure);
+  }
+
+  .empty .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .body {
+    color: var(--ink-2);
+  }
+</style>

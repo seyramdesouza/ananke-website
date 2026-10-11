@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import EmptyState from '../../components/EmptyState.astro';
+
+const all = await getCollection('exhibitions');
+const byDate = (a: (typeof all)[number], b: (typeof all)[number]) =>
+  (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0);
+
+const groups = [
+  { title: 'Current', items: all.filter((e) => e.data.status === 'current').sort(byDate) },
+  { title: 'Upcoming', items: all.filter((e) => e.data.status === 'upcoming').sort(byDate) },
+  { title: 'Past', items: all.filter((e) => e.data.status === 'past').sort(byDate) },
+].filter((g) => g.items.length > 0);
+
+const fmt = (d?: Date) => d?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title="Exhibitions"
+  description="Ananke's exhibition projects explore the space between objects and the stories we attach to them."
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Projects', href: '/projects/' }, { label: 'Exhibitions' }]}
+>
+  <PageHeader
+    eyebrow="Curating"
+    title="Exhibitions"
+    lead="Ananke's exhibition projects explore the space between objects and the stories we attach to them."
+  />
+
+  <section class="container">
+    <p class="prose dropcap">
+      We are particularly interested in archives, memory, identity, place and the ways curatorial practice can create
+      new relationships between people and cultural material.
+    </p>
+  </section>
+
+  <section class="section container">
+    {
+      groups.length > 0 ? (
+        groups.map((group) => (
+          <div class="group">
+            <h2 class="section-title">{group.title}</h2>
+            <div class="grid-3">
+              {group.items.map((ex) => (
+                <article class="card">
+                  {ex.data.image && <img src={ex.data.image} alt="" loading="lazy" />}
+                  <h3 class="card-title">{ex.data.title}</h3>
+                  <p class="card-meta">
+                    {[fmt(ex.data.startDate), fmt(ex.data.endDate)].filter(Boolean).join(' – ')}
+                    {ex.data.venue && ` · ${ex.data.venue}`}
+                  </p>
+                  {ex.data.artists.length > 0 && <p class="card-meta">{ex.data.artists.join(', ')}</p>}
+                  {ex.data.summary && <p>{ex.data.summary}</p>}
+                </article>
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <EmptyState>
+          <p>Exhibition projects are in development and will be announced here.</p>
+        </EmptyState>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .group + .group {
+    margin-top: var(--space-l);
+  }
+
+  .card img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: var(--step-2);
+    margin-bottom: 0.5rem;
+  }
+
+  .card-meta {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+</style>

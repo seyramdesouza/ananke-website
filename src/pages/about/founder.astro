@@ -1,0 +1,128 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import EmptyState from '../../components/EmptyState.astro';
+
+const founder = await getEntry('people', 'seyram-klu-de-souza');
+if (!founder) throw new Error('Founder entry missing: src/content/people/seyram-klu-de-souza.md');
+const { Content } = await render(founder);
+const hasBio = Boolean(founder.body?.trim());
+---
+
+<BaseLayout
+  title={`Founder — ${founder.data.name}`}
+  description={`${founder.data.name}, founder of Ananke Projects.`}
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About', href: '/about/' }, { label: 'Founder' }]}
+>
+  <PageHeader eyebrow="Founder" title={founder.data.name}>
+    <p class="roles caps">Founder, Ananke Projects · Founder &amp; Chief Editor, <em>Interstice</em></p>
+  </PageHeader>
+
+  <section class="container founder">
+    <div class="portrait">
+      {founder.data.photo ? <img src={founder.data.photo} alt={`Portrait of ${founder.data.name}`} /> : <span aria-hidden="true">SK</span>}
+    </div>
+    <div class="prose">
+      {
+        hasBio ? (
+          <Content />
+        ) : (
+          <EmptyState title="Biography">
+            <p>A biography and founder's statement will be published here.</p>
+          </EmptyState>
+        )
+      }
+      <blockquote class="founder-quote">
+        <p>“There is beauty in that condition. There is honesty in unfinished things.”</p>
+        <footer>From the Editor's Note, <a href="/projects/publications/interstice/issues/issue-1-2026/#editors-note"><em>Interstice</em>, Issue I</a></footer>
+      </blockquote>
+      <div class="onward">
+        <ArrowLink href="/about/">About Ananke</ArrowLink>
+        <ArrowLink href="/projects/publications/interstice/editorial-team/">Interstice editorial team</ArrowLink>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .roles {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 1.25rem;
+  }
+
+  .founder-quote {
+    margin: var(--space-m) 0 0;
+    padding: var(--space-m);
+    border-radius: var(--radius);
+    background: var(--interstice);
+    color: #fff;
+  }
+
+  .founder-quote p {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .founder-quote footer {
+    font-size: 0.95rem;
+  }
+
+  .founder-quote a {
+    color: #fff;
+  }
+
+  .roles em {
+    font-family: var(--serif);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.95rem;
+  }
+
+  .founder {
+    display: grid;
+    gap: var(--space-m);
+    margin-top: var(--space-m);
+  }
+
+  @media (min-width: 48rem) {
+    .founder {
+      grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+      gap: var(--space-l);
+    }
+  }
+
+  .portrait {
+    aspect-ratio: 4 / 5;
+    max-width: 20rem;
+    background: var(--paper-2);
+    border-radius: var(--radius);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .portrait span {
+    font-style: italic;
+    font-size: 4rem;
+    color: var(--muted);
+  }
+
+  .onward {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: var(--space-m);
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import IssueCover from './IssueCover.astro';
+import { INTERSTICE } from '../data/navigation';
+
+interface Props {
+  issue: CollectionEntry<'issues'>;
+}
+
+const { issue } = Astro.props;
+const { label, numeral, year, status, summary, cover, coverAlt, pdf, pdfSize } = issue.data;
+const forthcoming = status === 'forthcoming';
+const href = forthcoming ? undefined : `${INTERSTICE}issues/${issue.id}/`;
+---
+
+<article class:list={['issue-card', { 'issue-card--forthcoming': forthcoming }]}>
+  {
+    href ? (
+      <a href={href} class="cover-link" tabindex="-1" aria-hidden="true">
+        <IssueCover numeral={numeral} year={year} cover={cover} alt={coverAlt} />
+      </a>
+    ) : (
+      <IssueCover numeral={numeral} year={year} cover={cover} alt={coverAlt} forthcoming />
+    )
+  }
+  <div class="issue-body">
+    <p class="eyebrow">{forthcoming ? 'Forthcoming' : 'Published'}</p>
+    <h3 class="issue-title">
+      {href ? <a href={href}>{label}</a> : label}
+    </h3>
+    {summary && <p class="issue-summary">{summary}</p>}
+    {forthcoming && (
+      <p class="issue-summary muted">
+        Details to be announced. <a href="/projects/publications/submissions/">Submission guidelines</a>
+      </p>
+    )}
+    <div class="card-links">
+      {href && <a href={href} class="explore">Explore the Issue <span aria-hidden="true">→</span></a>}
+      {pdf && (
+        <a href={pdf} class="explore" download={pdf.split('/').pop()}>
+          Download PDF{pdfSize && ` (${pdfSize})`} <span aria-hidden="true">↓</span>
+        </a>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .issue-card {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+
+  .cover-link {
+    display: block;
+    transition: transform 0.25s ease;
+  }
+
+  .cover-link:hover {
+    transform: translateY(-4px);
+  }
+
+  .issue-body .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .issue-card--forthcoming .eyebrow {
+    color: var(--interstice);
+  }
+
+  .issue-title {
+    font-size: var(--step-2);
+  }
+
+  .issue-title a {
+    text-decoration: none;
+  }
+
+  .issue-title a:hover {
+    text-decoration: underline;
+  }
+
+  .issue-summary {
+    margin-top: 0.75rem;
+    color: var(--ink-2);
+  }
+
+  .card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .explore:hover {
+    text-decoration: underline;
+  }
+</style>

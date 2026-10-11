@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+
+const areas = [
+  {
+    eyebrow: 'Publishing',
+    title: 'Publications',
+    subtitle: 'Ananke Editions',
+    text: 'Through Ananke Editions, we create independent publications that give space to emerging voices, experimental practices and ideas that might otherwise remain at the margins.',
+    href: '/projects/publications/',
+  },
+  {
+    eyebrow: 'Curating',
+    title: 'Exhibitions',
+    text: 'We develop exhibitions and cultural projects that create encounters between artworks, people, histories and ideas.',
+    href: '/projects/exhibitions/',
+  },
+  {
+    eyebrow: 'Cultural research',
+    title: 'Research',
+    text: 'Our work explores how culture can preserve memory, challenge assumptions, create dialogue and make room for perspectives that have not always occupied the centre.',
+    href: '/projects/research/',
+  },
+  {
+    eyebrow: 'Participation',
+    title: 'Community Projects',
+    text: 'We create participatory projects that bring people into cultural conversations: not simply as audiences, but as contributors to them.',
+    href: '/projects/community/',
+  },
+];
+---
+
+<BaseLayout
+  title="Projects"
+  description="Curatorial practice, publishing, research and community projects by Ananke Projects."
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Projects' }]}
+>
+  <PageHeader
+    eyebrow="Projects"
+    title="Our work"
+    lead="Ananke Projects creates spaces for ideas, stories and creative practices to encounter one another."
+  />
+
+  <section class="container areas">
+    {
+      areas.map((area, i) => (
+        <article class="area" data-reveal>
+          <span class="area-num" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <p class="eyebrow">{area.eyebrow}</p>
+            <h2 class="area-title">
+              <a href={area.href}>{area.title}</a>
+            </h2>
+            {area.subtitle && <p class="area-subtitle">{area.subtitle}</p>}
+          </div>
+          <div class="area-body">
+            <p>{area.text}</p>
+            <ArrowLink href={area.href}>Explore {area.title}</ArrowLink>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .areas {
+    margin-top: var(--space-m);
+  }
+
+  .area {
+    display: grid;
+    gap: 1rem var(--space-m);
+    padding-block: var(--space-m);
+    border-top: 1px solid var(--ink);
+  }
+
+  .area:last-child {
+    border-bottom: 1px solid var(--ink);
+  }
+
+  @media (min-width: 56rem) {
+    .area {
+      grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 1.2fr);
+      align-items: start;
+    }
+  }
+
+  .area-num {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+
+  .area .eyebrow {
+    margin-bottom: 0.6rem;
+  }
+
+  .area-title {
+    font-size: var(--step-5);
+    line-height: 0.95;
+  }
+
+  .area-title a {
+    text-decoration: none;
+  }
+
+  .area-title a:hover {
+    color: var(--accent);
+  }
+
+  .area-subtitle {
+    font-style: italic;
+    color: var(--ink-2);
+    margin-top: 0.4rem;
+  }
+
+  .area-body p {
+    font-size: var(--step-1);
+    color: var(--ink-2);
+    margin-bottom: 1.5rem;
+  }
+</style>

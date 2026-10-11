@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../../components/PageHeader.astro';
+import PersonCard from '../../../../components/PersonCard.astro';
+import EmptyState from '../../../../components/EmptyState.astro';
+import { INTERSTICE } from '../../../../data/navigation';
+
+const contributors = (await getCollection('people', ({ data }) => data.roles.includes('Contributor'))).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+
+const works = await getCollection('works');
+const issues = await getCollection('issues');
+const issueLabel = new Map(issues.map((i) => [i.id, i.data.label]));
+const worksBy = (personId: string) =>
+  works
+    .filter((w) => w.data.contributors.some((c) => c.id === personId))
+    .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Contributors — Interstice"
+  description="The contributors to Interstice: A Journal of Unfinished Ideas and Emergent Practice."
+  interstice
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects/' },
+    { label: 'Publications', href: '/projects/publications/' },
+    { label: 'Interstice', href: INTERSTICE },
+    { label: 'Contributors' },
+  ]}
+>
+  <PageHeader eyebrow="Interstice" title="Contributors" />
+
+  <section class="container">
+    <p class="prose">
+      Interstice is built around the belief that unfinished work is not without value. The contributors to Issue I
+      have each offered something in the midst of becoming: a fragment, a question, an image, a poem, a thought or a
+      work that has not yet reached its final form.
+    </p>
+  </section>
+
+  <section class="section container">
+    {
+      contributors.length > 0 ? (
+        <div class="grid-3">
+          {contributors.map((person) => {
+            const theirs = worksBy(person.id);
+            return (
+              <PersonCard person={person}>
+                {theirs.length > 0 && (
+                  <ul class="their-works" role="list">
+                    {theirs.map((w) => (
+                      <li>
+                        <a href={`${INTERSTICE}issues/${w.data.issue.id}/#contents`}>
+                          <span class="w-title">{w.data.titleTranslation ?? w.data.title}</span>
+                          <span class="w-meta">
+                            {w.data.form} · {issueLabel.get(w.data.issue.id)}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </PersonCard>
+            );
+          })}
+        </div>
+      ) : (
+        <EmptyState title="Issue I contributors">
+          <p>Contributor profiles for Issue I will appear here.</p>
+        </EmptyState>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .their-works {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .their-works a {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--interstice) 7%, var(--cream));
+    text-decoration: none;
+  }
+
+  .their-works a:hover {
+    background: color-mix(in srgb, var(--interstice) 14%, var(--cream));
+    color: var(--forest);
+  }
+
+  .w-title {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    color: var(--interstice);
+  }
+
+  .w-meta {
+    font-size: 0.875rem;
+    color: var(--forest-2);
+  }
+</style>

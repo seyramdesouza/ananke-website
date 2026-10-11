@@ -1,0 +1,40 @@
+---
+/**
+ * The Ananke Projects mark. Rendered as a CSS mask over `currentColor`, so it
+ * takes the colour of its surroundings (forest on cream, cream on dark).
+ * Source: public/images/logo.png (black mark on transparent background).
+ */
+interface Props {
+  size?: string; // any CSS length, e.g. "2.5rem"
+  label?: string; // accessible name; omit when the logo is decorative
+  class?: string;
+}
+
+const { size = '2.5rem', label, class: className } = Astro.props;
+---
+
+<span
+  class:list={['logo', className]}
+  style={`--logo-size: ${size}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}></span>
+
+<style>
+  .logo {
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--logo-size);
+    height: var(--logo-size);
+    background-color: currentColor;
+    -webkit-mask: url('/images/logo.png') center / contain no-repeat;
+    mask: url('/images/logo.png') center / contain no-repeat;
+  }
+
+  /* Windows High Contrast / forced colours: keep the mark visible. */
+  @media (forced-colors: active) {
+    .logo {
+      background-color: CanvasText;
+    }
+  }
+</style>

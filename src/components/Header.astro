@@ -1,0 +1,427 @@
+---
+import { mainNav, normalise } from '../data/navigation';
+import Logo from './Logo.astro';
+
+interface Props {
+  /** Transparent, light-on-dark header that sits over a full-screen hero. */
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
+const path = normalise(Astro.url.pathname);
+// Home is active only on the homepage; other items stay active on their sub-pages.
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class:list={['site-header', { 'site-header--overlay': overlay }]} data-header>
+  <div class="container header-inner">
+    <div class="header-left">
+      <a href="/" class="wordmark" aria-label="Ananke Projects — home">
+        <Logo size="2.6rem" class="mark" />
+        <span class="wordmark-name">Ananke <span class="wordmark-sub">Projects</span></span>
+      </a>
+
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        <ul class="nav-list" role="list">
+          {
+            mainNav.map((item) => (
+              <li class:list={['nav-item', { 'has-children': item.children }]}>
+                <a
+                  href={item.href}
+                  class:list={['nav-link', { active: isActive(item.href) }]}
+                  aria-current={path === item.href ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+                {item.children && (
+                  <ul class="subnav" role="list">
+                    {item.children.map((child) => (
+                      <li>
+                        <a href={child.href} aria-current={path === child.href ? 'page' : undefined}>
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))
+          }
+          <li class="nav-item nav-item--mobile-cta">
+            <a href="/contact/" class="pill pill--solid">Get in touch</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <a href="/contact/" class="pill pill--solid header-cta">Get in touch</a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="menu-label">Menu</span>
+      <span class="menu-icon" aria-hidden="true"><span></span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
+
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    header?.classList.toggle('is-open', !open);
+    document.body.style.overflow = open ? '' : 'hidden';
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && header?.classList.contains('is-open')) {
+      toggle?.click();
+      toggle?.focus();
+    }
+  });
+
+  // Overlay header: switch to the solid cream header once the hero has scrolled away.
+  if (header?.classList.contains('site-header--overlay')) {
+    const hero = document.querySelector('[data-hero]');
+    if (hero && 'IntersectionObserver' in window) {
+      new IntersectionObserver(
+        ([entry]) => header.classList.toggle('is-solid', !entry.isIntersecting),
+        { rootMargin: `-${header.offsetHeight}px 0px 0px 0px` },
+      ).observe(hero);
+    }
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    background: var(--cream);
+    color: var(--forest);
+    transition:
+      background-color var(--fast) var(--ease),
+      color var(--fast) var(--ease);
+  }
+
+  /* Over the dark hero: transparent and light, until .is-solid. */
+  .site-header--overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background: transparent;
+    color: var(--cream);
+  }
+
+  .site-header--overlay.is-solid,
+  .site-header--overlay.is-open {
+    background: var(--cream);
+    color: var(--forest);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: 1.5rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .wordmark:hover {
+    color: inherit;
+  }
+
+  .wordmark :global(.mark) {
+    transition: transform var(--fast) var(--ease);
+  }
+
+  .wordmark:hover :global(.mark) {
+    transform: translateY(-2px);
+  }
+
+  .wordmark-name {
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .wordmark-sub {
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  @media (max-width: 24rem) {
+    .wordmark-sub {
+      display: none;
+    }
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-item--mobile-cta {
+    display: none;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--header-h);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-link:hover {
+    color: inherit;
+    opacity: 0.65;
+  }
+
+  .nav-link.active::before {
+    content: '•';
+    margin-right: 0.35rem;
+    color: var(--orange);
+  }
+
+  .subnav {
+    position: absolute;
+    top: calc(100% - 0.75rem);
+    left: -1rem;
+    min-width: 13rem;
+    padding: 0.5rem;
+    background: var(--cream);
+    color: var(--forest);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 40px -24px rgb(14 36 4 / 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition:
+      opacity var(--fast) var(--ease),
+      transform var(--fast) var(--ease),
+      visibility var(--fast);
+  }
+
+  .has-children:hover .subnav,
+  .has-children:focus-within .subnav {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .subnav a {
+    display: block;
+    padding: 0.65rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  .subnav a:hover,
+  .subnav a[aria-current='page'] {
+    background: var(--cream-2);
+    color: var(--forest);
+  }
+
+  /* Pill button (shared look with ArrowLink solid) */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1.4rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .pill--solid {
+    background: var(--forest);
+    color: var(--cream);
+  }
+
+  .pill--solid:hover {
+    background: var(--orange);
+    color: var(--forest);
+  }
+
+  .site-header--overlay:not(.is-solid):not(.is-open) .header-cta {
+    background: transparent;
+    color: var(--cream);
+    box-shadow: inset 0 0 0 1px var(--cream);
+  }
+
+  .site-header--overlay:not(.is-solid):not(.is-open) .header-cta:hover {
+    background: var(--orange);
+    color: var(--forest);
+    box-shadow: none;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  /* Mobile ---------------------------------------------------------------- */
+  @media (max-width: 55.99rem) {
+    .header-cta {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-height: 2.75rem;
+      padding: 0 1.1rem;
+      border: 0;
+      border-radius: 999px;
+      background: var(--forest);
+      color: var(--cream);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .site-header--overlay:not(.is-solid):not(.is-open) .menu-toggle {
+      background: var(--cream);
+      color: var(--forest);
+    }
+
+    .menu-icon,
+    .menu-icon span,
+    .menu-icon::before,
+    .menu-icon::after {
+      display: block;
+      width: 1rem;
+      height: 1.5px;
+      background: currentColor;
+      transition:
+        transform var(--fast) var(--ease),
+        opacity var(--fast) var(--ease);
+    }
+
+    .menu-icon {
+      position: relative;
+      background: none;
+    }
+
+    .menu-icon::before,
+    .menu-icon::after {
+      content: '';
+      position: absolute;
+      left: 0;
+    }
+
+    .menu-icon::before {
+      top: -4px;
+    }
+
+    .menu-icon::after {
+      top: 4px;
+    }
+
+    .is-open .menu-icon span {
+      opacity: 0;
+    }
+
+    .is-open .menu-icon::before {
+      transform: translateY(4px) rotate(45deg);
+    }
+
+    .is-open .menu-icon::after {
+      transform: translateY(-4px) rotate(-45deg);
+    }
+
+    .site-nav {
+      display: none;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
+      background: var(--cream);
+      color: var(--forest);
+      overflow-y: auto;
+      padding: 1rem var(--gutter) 3rem;
+    }
+
+    .is-open .site-nav {
+      display: block;
+    }
+
+    .nav-list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .nav-item {
+      border-bottom: 1px solid var(--line);
+      padding-block: 1rem;
+    }
+
+    .nav-link {
+      font-family: var(--display);
+      font-variation-settings: 'opsz' 144;
+      font-weight: 400;
+      font-size: 2.6rem;
+      min-height: 3rem;
+    }
+
+    .nav-link.active::before {
+      display: none;
+    }
+
+    .subnav {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      border: 0;
+      box-shadow: none;
+      background: none;
+      padding: 0.25rem 0 0;
+      min-width: 0;
+    }
+
+    .subnav a {
+      padding: 0.6rem 0;
+      font-size: 1.05rem;
+    }
+
+    .nav-item--mobile-cta {
+      display: block;
+      border: 0;
+      padding-top: 2rem;
+    }
+
+    .nav-item--mobile-cta .pill {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+---
+
+<BaseLayout title="Page not found">
+  <PageHeader eyebrow="404" title="This page is still unfinished" lead="Or perhaps it never existed. Either way, it isn't here.">
+    <p class="links">
+      <ArrowLink href="/" variant="solid">Back to home</ArrowLink>
+      <ArrowLink href="/projects/">Explore our projects</ArrowLink>
+    </p>
+  </PageHeader>
+</BaseLayout>
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    margin-top: var(--space-m);
+  }
+</style>

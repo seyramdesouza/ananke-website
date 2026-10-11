@@ -1,0 +1,193 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import { principles } from '../../data/principles';
+---
+
+<BaseLayout
+  title="About"
+  description="Ananke Projects is an independent cultural initiative founded by Seyram Klu De-Souza."
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
+>
+  <header class="container about-head">
+    <p class="eyebrow eyebrow--accent">About Ananke</p>
+    <h1 class="about-lead">
+      Ananke Projects is an independent cultural initiative founded by
+      <a href="/about/founder/">Seyram Klu De-Souza</a>.
+    </h1>
+  </header>
+
+  <section class="section container">
+    <div class="name-block" data-reveal>
+      <p class="name-word" aria-hidden="true">Ἀνάγκη</p>
+      <p class="lead">
+        Named after Ananke, the Greek personification of inevitability and necessity, the platform exists as a space
+        where art is understood not simply as aesthetic production, but as a necessary force for dialogue,
+        transformation, and cultural meaning.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="split">
+      <p class="eyebrow">Our work</p>
+      <div class="prose dropcap">
+        <p>
+          Our work spans curatorial practice, publishing, visual culture, cultural research and community projects. We
+          create spaces for ideas, stories and creative practices to encounter one another and are drawn to the spaces
+          between things: between disciplines, between cultures, between what has been inherited and what is yet to be
+          imagined.
+        </p>
+        <p>
+          Our work explores how culture can preserve memory, challenge assumptions, create dialogue and make room for
+          perspectives that have not always occupied the centre.
+        </p>
+        <p>
+          Through our projects, Ananke seeks to approach culture not simply as something to be presented, but as
+          something continually being made, questioned and reimagined.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="split">
+      <p class="eyebrow">Why Ananke</p>
+      <div>
+        <p class="belief" data-reveal>
+          Ananke Projects is founded on the belief that artistic expression is not optional, but essential to how
+          societies think, remember, heal, and imagine new futures.
+        </p>
+        <div class="prose">
+          <p>
+            Working across publishing, curatorial practice, interdisciplinary collaboration, research, and cultural
+            programming, Ananke Projects is committed to creating thoughtful spaces where artists, writers, filmmakers,
+            and cultural practitioners can experiment freely and engage deeply with ideas that shape contemporary life.
+          </p>
+          <p>
+            <a href="/projects/publications/interstice/"><em>Interstice</em></a> emerges as the inaugural publishing
+            initiative under Ananke Projects — the first expression of a long-term vision dedicated to nurturing
+            process, experimentation, and forms of creative practice that exist beyond conventional expectations of
+            completion.
+          </p>
+        </div>
+        <p class="because">At its core, Ananke Projects exists for one simple reason: <em>because art must.</em></p>
+        <dl class="facts about-facts">
+          <div><dt>Founded by</dt><dd>Seyram Klu De-Souza</dd></div>
+          <div><dt>Based in</dt><dd>Accra, Ghana</dd></div>
+          <div><dt>Publishing imprint</dt><dd>Ananke Editions</dd></div>
+          <div><dt>First publication</dt><dd><em>Interstice</em>, Issue I, 2026</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="split">
+      <p class="eyebrow">Our Approach</p>
+      <div>
+        <ul class="principles" role="list">
+          {principles.map((p) => <li>{p.name}</li>)}
+        </ul>
+        <ArrowLink href="/about/approach/">Read our approach</ArrowLink>
+      </div>
+    </div>
+  </section>
+
+  <section class="container onward">
+    <ArrowLink href="/about/founder/">Founder</ArrowLink>
+    <ArrowLink href="/about/approach/">Approach</ArrowLink>
+    <ArrowLink href="/projects/">Projects</ArrowLink>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-head {
+    padding-top: var(--space-l);
+    padding-bottom: var(--space-m);
+  }
+
+  .about-lead {
+    font-size: var(--step-4);
+    font-weight: 400;
+    max-width: 22ch;
+    line-height: 1.05;
+  }
+
+  .about-lead a {
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+  }
+
+  .name-block {
+    display: grid;
+    gap: var(--space-m);
+    align-items: center;
+  }
+
+  @media (min-width: 56rem) {
+    .name-block {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+      gap: var(--space-l);
+    }
+  }
+
+  .name-word {
+    font-family: var(--display);
+    font-size: clamp(4rem, 2rem + 8vw, 9.5rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .belief {
+    font-family: var(--display);
+    font-variation-settings: 'opsz' 144;
+    font-size: var(--step-3);
+    line-height: 1.1;
+    max-width: 24ch;
+    margin-bottom: var(--space-m);
+  }
+
+  .because {
+    font-family: var(--display);
+    font-size: var(--step-2);
+    margin: var(--space-m) 0;
+  }
+
+  .because em {
+    color: var(--orange);
+    background: var(--forest);
+    padding: 0 0.3em;
+    border-radius: 4px;
+  }
+
+  .about-facts {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .principles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: var(--step-3);
+    margin-bottom: 2rem;
+  }
+
+  .principles li:not(:last-child)::after {
+    content: '·';
+    margin-left: 1.5rem;
+    color: var(--muted);
+  }
+
+  .onward {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+</style>

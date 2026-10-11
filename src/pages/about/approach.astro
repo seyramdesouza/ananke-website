@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import { principles } from '../../data/principles';
+---
+
+<BaseLayout
+  title="Our Approach"
+  description="Curatorial, independent, contextual, collaborative and emergent: the principles behind Ananke Projects."
+  breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About', href: '/about/' }, { label: 'Approach' }]}
+>
+  <PageHeader eyebrow="About" title="Our Approach" />
+
+  <section class="container">
+    <ol class="principles" role="list">
+      {
+        principles.map((p, i) => (
+          <li class="principle" data-reveal>
+            <span class="num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h2 class="name">{p.name}</h2>
+            <p class="text">{p.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section container onward">
+    <ArrowLink href="/about/">About Ananke</ArrowLink>
+    <ArrowLink href="/projects/">See our projects</ArrowLink>
+  </section>
+</BaseLayout>
+
+<style>
+  .principle {
+    display: grid;
+    gap: 0.5rem var(--space-m);
+    padding-block: var(--space-m);
+    border-top: 1px solid var(--ink);
+  }
+
+  .principle:last-child {
+    border-bottom: 1px solid var(--ink);
+  }
+
+  @media (min-width: 56rem) {
+    .principle {
+      grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 1.2fr);
+      align-items: baseline;
+    }
+  }
+
+  .num {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  .name {
+    font-size: var(--step-4);
+    font-weight: 500;
+  }
+
+  .text {
+    font-size: var(--step-2);
+    line-height: 1.35;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .onward {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+</style>

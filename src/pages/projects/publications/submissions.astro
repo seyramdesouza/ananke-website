@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import OpenCall from '../../../components/OpenCall.astro';
+import site from '../../../content/settings/site.json';
+import { INTERSTICE } from '../../../data/navigation';
+
+// DRAFT COPY — see .SITE-PLAN.md "Submission Guidelines". Confirm or rewrite before launch.
+const sections = [
+  { id: 'open-call', label: 'Current open call' },
+  { id: 'what-we-accept', label: 'What we accept' },
+  { id: 'how-to-submit', label: 'How to submit' },
+  { id: 'what-happens-next', label: 'What happens next' },
+  { id: 'other-enquiries', label: 'Books and other enquiries' },
+];
+---
+
+<BaseLayout
+  title="Submission Guidelines"
+  description="How to submit work to Ananke Editions and Interstice."
+  interstice
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects/' },
+    { label: 'Publications', href: '/projects/publications/' },
+    { label: 'Submission Guidelines' },
+  ]}
+>
+  <PageHeader
+    eyebrow="Ananke Editions"
+    title="Submission Guidelines"
+    lead="Ananke Editions welcomes work that asks questions, opens conversations and resists the pressure to arrive neatly resolved."
+  />
+
+  <div class="container layout">
+    <nav class="toc" aria-label="On this page">
+      <p class="eyebrow">On this page</p>
+      <ol role="list">
+        {sections.map((s) => <li><a href={`#${s.id}`}>{s.label}</a></li>)}
+      </ol>
+    </nav>
+
+    <div class="content">
+      <p class="prose intro">
+        We are interested in literature, visual culture, cultural memory and emerging creative practice, from
+        emerging and established voices alike.
+      </p>
+
+      <section id="open-call">
+        <h2 class="sr-only">Current open call</h2>
+        <OpenCall />
+      </section>
+
+      <section id="what-we-accept">
+        <h2>What we accept</h2>
+        <p>
+          <em>Interstice</em> is built around the belief that unfinished work is not without value. We welcome:
+        </p>
+        <ul>
+          <li>Unfinished poems, fragments and drafts</li>
+          <li>Sketches, abandoned images, visual traces and marginalia</li>
+          <li>Short essays, notes and reflections on process</li>
+          <li>Works still searching for their final form</li>
+        </ul>
+        <p class="muted">Limits for each form will be published with each open call.</p>
+      </section>
+
+      <section id="how-to-submit">
+        <h2>How to submit</h2>
+        <p>Send your submission by email to <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+        <ul>
+          <li>Subject line: <code>Interstice Submission — [Your Name] — [Title]</code></li>
+          <li>Your name, country and practice</li>
+          <li>A short bio (50–100 words)</li>
+          <li>A short note on the work (up to 150 words)</li>
+          <li>The work itself, attached as a document or image files</li>
+        </ul>
+        <p class="muted">Details on rights, fees and file formats will be published with each open call.</p>
+      </section>
+
+      <section id="what-happens-next">
+        <h2>What happens next</h2>
+        <p>
+          Every submission is read by the <a href={`${INTERSTICE}editorial-team/`}>editorial team</a>. We will be in
+          touch after the call closes.
+        </p>
+      </section>
+
+      <section id="other-enquiries">
+        <h2>Books and other enquiries</h2>
+        <p>
+          Ananke Editions also considers proposals for books and experimental publications. Please
+          <a href="/contact/">get in touch</a>.
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: grid;
+    gap: var(--space-m);
+    margin-top: var(--space-m);
+  }
+
+  @media (min-width: 56rem) {
+    .layout {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      gap: var(--space-l);
+    }
+
+    .toc {
+      position: sticky;
+      top: 9rem;
+      align-self: start;
+    }
+  }
+
+  .toc ol {
+    border-left: 1px solid var(--rule);
+  }
+
+  .toc a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--ink-2);
+  }
+
+  .toc a:hover {
+    color: var(--accent);
+  }
+
+  .content {
+    max-width: var(--measure);
+  }
+
+  .content > * + * {
+    margin-top: var(--space-l);
+  }
+
+  .content section {
+    scroll-margin-top: 9rem;
+  }
+
+  .content h2 {
+    font-size: var(--step-3);
+    margin-bottom: 1.25rem;
+  }
+
+  .content ul {
+    padding-left: 1.25rem;
+    margin: 0 0 1em;
+  }
+
+  .content li + li {
+    margin-top: 0.4rem;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--paper-2);
+    padding: 0.1em 0.4em;
+    overflow-wrap: anywhere;
+  }
+</style>

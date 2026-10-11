@@ -1,0 +1,233 @@
+# Decap CMS configuration for anankeprojects.com/admin
+# Field names must match src/content.config.ts.
+
+backend:
+  name: github
+  repo: seyramdesouza/ananke-website # TODO: replace with the real GitHub owner/repository
+  branch: main
+  base_url: https://anankeprojects.com
+  auth_endpoint: /api/auth
+
+# Run `npm run cms` alongside `npm run dev` to edit locally at http://localhost:4321/admin/
+local_backend: true
+
+publish_mode: editorial_workflow
+media_folder: public/images/uploads
+public_folder: /images/uploads
+site_url: https://anankeprojects.com
+display_url: https://anankeprojects.com
+logo_url: /icon-512.png
+
+collections:
+  # ------------------------------------------------------------------ Issues
+  - name: issues
+    label: Issues
+    label_singular: Issue
+    folder: src/content/issues
+    create: true
+    slug: "issue-{{fields.number}}-{{fields.year}}"
+    summary: "{{label}} ({{status}})"
+    sortable_fields: [number, year]
+    fields:
+      - { label: Label, name: label, widget: string, hint: 'e.g. "Issue I, 2026"' }
+      - { label: Numeral on cover, name: numeral, widget: string, hint: 'e.g. "I"' }
+      - { label: Number, name: number, widget: number, value_type: int }
+      - { label: Year, name: year, widget: number, value_type: int }
+      - label: Status
+        name: status
+        widget: select
+        options: [published, forthcoming]
+        default: forthcoming
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Standfirst (line under summary), name: standfirst, widget: text, required: false }
+      - { label: Cover image, name: cover, widget: image, required: false }
+      - { label: Cover description (alt text), name: coverAlt, widget: text, required: false }
+      - { label: Publisher, name: publisher, widget: string, required: false }
+      - { label: Place of publication, name: place, widget: string, required: false, hint: 'e.g. "Accra, Ghana"' }
+      - { label: ISSN, name: issn, widget: string, required: false }
+      - label: Sections (in reading order)
+        name: sections
+        widget: list
+        required: false
+      - label: Credits
+        name: credits
+        widget: list
+        required: false
+        summary: "{{fields.role}}: {{fields.name}}"
+        fields:
+          - { label: Role, name: role, widget: string }
+          - { label: Name, name: name, widget: string }
+      - { label: Copyright notice, name: copyright, widget: text, required: false }
+      - { label: Acknowledgements, name: acknowledgements, widget: list, required: false }
+      - label: Excerpts (foreword, reflection…)
+        name: excerpts
+        widget: list
+        required: false
+        summary: "{{fields.heading}} — {{fields.author}}"
+        fields:
+          - { label: Heading, name: heading, widget: string }
+          - { label: Title, name: title, widget: string, required: false }
+          - { label: Text, name: text, widget: text }
+          - { label: Author, name: author, widget: string }
+          - { label: Affiliation, name: affiliation, widget: string, required: false }
+      - { label: Closing quote, name: closingQuote, widget: text, required: false }
+      - { label: Read link (external), name: readUrl, widget: string, required: false }
+      - { label: Issue PDF (download), name: pdf, widget: file, required: false }
+      - { label: PDF file size, name: pdfSize, widget: string, required: false, hint: 'e.g. "6.2 MB"' }
+      - label: Editors
+        name: editors
+        widget: relation
+        collection: people
+        search_fields: [name]
+        value_field: "{{slug}}"
+        display_fields: [name]
+        multiple: true
+        required: false
+      - { label: Editor's note, name: body, widget: markdown, required: false }
+
+  # ------------------------------------------------------------------- Works
+  - name: works
+    label: Works
+    label_singular: Work
+    folder: src/content/works
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{form}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: English title (if original is in another language), name: titleTranslation, widget: string, required: false }
+      - label: Issue
+        name: issue
+        widget: relation
+        collection: issues
+        search_fields: [label]
+        value_field: "{{slug}}"
+        display_fields: [label]
+      - label: Contributors
+        name: contributors
+        widget: relation
+        collection: people
+        search_fields: [name]
+        value_field: "{{slug}}"
+        display_fields: [name]
+        multiple: true
+      - { label: Section, name: section, widget: string, required: false, hint: "Must match one of the issue's sections" }
+      - { label: Page in printed issue, name: page, widget: number, value_type: int, required: false }
+      - { label: Form, name: form, widget: string, hint: "Poem, image, sketch, marginalia, essay…" }
+      - { label: Order in issue, name: order, widget: number, value_type: int, default: 100 }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Text, name: body, widget: markdown, required: false }
+
+  # ------------------------------------------------------------------ People
+  - name: people
+    label: People
+    label_singular: Person
+    folder: src/content/people
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    summary: "{{name}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+      - label: Roles
+        name: roles
+        widget: select
+        multiple: true
+        options: [Contributor, Editor, Founder]
+      - { label: Role title, name: roleTitle, widget: string, required: false, hint: 'e.g. "Co-editor"' }
+      - { label: Country, name: country, widget: string, required: false }
+      - { label: Practice, name: practice, widget: string, required: false }
+      - { label: Photo, name: photo, widget: image, required: false }
+      - { label: Display order, name: order, widget: number, value_type: int, default: 100 }
+      - label: Links
+        name: links
+        widget: list
+        required: false
+        fields:
+          - { label: Label, name: label, widget: string }
+          - { label: URL, name: url, widget: string }
+      - { label: Short bio, name: body, widget: markdown, required: false }
+
+  # ------------------------------------------------------------- Exhibitions
+  - name: exhibitions
+    label: Exhibitions
+    label_singular: Exhibition
+    folder: src/content/exhibitions
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Status, name: status, widget: select, options: [current, upcoming, past] }
+      - { label: Start date, name: startDate, widget: datetime, time_format: false, required: false }
+      - { label: End date, name: endDate, widget: datetime, time_format: false, required: false }
+      - { label: Venue, name: venue, widget: string, required: false }
+      - { label: Artists, name: artists, widget: list, required: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Curatorial text, name: body, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- Research
+  - name: research
+    label: Research
+    label_singular: Research project
+    folder: src/content/research
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Status, name: status, widget: select, options: [ongoing, complete] }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Collaborators, name: collaborators, widget: list, required: false }
+      - { label: File, name: file, widget: file, required: false }
+      - { label: Body, name: body, widget: markdown, required: false }
+
+  # ------------------------------------------------------ Community Projects
+  - name: community
+    label: Community Projects
+    label_singular: Community project
+    folder: src/content/community
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Partners, name: partners, widget: list, required: false }
+      - { label: Location, name: location, widget: string, required: false }
+      - { label: Start date, name: startDate, widget: datetime, time_format: false, required: false }
+      - { label: End date, name: endDate, widget: datetime, time_format: false, required: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Body, name: body, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- Settings
+  - name: settings
+    label: Settings
+    editor: { preview: false }
+    files:
+      - name: open-call
+        label: Open Call
+        file: src/content/settings/open-call.json
+        format: json
+        fields:
+          - label: Status
+            name: status
+            widget: select
+            options:
+              - { label: Open, value: open }
+              - { label: Opening soon, value: opening-soon }
+              - { label: Closed, value: closed }
+          - { label: Issue, name: issue, widget: string }
+          - { label: Theme, name: theme, widget: string, required: false }
+          - { label: Deadline, name: deadline, widget: datetime, time_format: false, required: false }
+          - { label: Extra note, name: note, widget: text, required: false }
+      - name: site
+        label: Site Settings
+        file: src/content/settings/site.json
+        format: json
+        fields:
+          - { label: Site name, name: name, widget: string }
+          - { label: Tagline, name: tagline, widget: string }
+          - { label: Description, name: description, widget: text }
+          - { label: Location, name: location, widget: string }
+          - { label: Contact email, name: email, widget: string }
+          - { label: Instagram URL, name: instagram, widget: string }
+          - { label: Instagram handle, name: instagramHandle, widget: string }

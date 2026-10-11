@@ -1,0 +1,95 @@
+---
+import openCall from '../content/settings/open-call.json';
+import site from '../content/settings/site.json';
+
+type Status = 'open' | 'closed' | 'opening-soon';
+const status = openCall.status as Status;
+
+const labels: Record<Status, string> = {
+  open: 'Open call',
+  'opening-soon': 'Opening soon',
+  closed: 'Submissions closed',
+};
+
+const deadline = openCall.deadline
+  ? new Date(openCall.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  : undefined;
+---
+
+<section class:list={['open-call', `open-call--${status}`]} aria-labelledby="open-call-title">
+  <p class="status caps">{labels[status]}</p>
+  <h2 id="open-call-title" class="title"><em>Interstice</em>, {openCall.issue}</h2>
+
+  {
+    status === 'closed' ? (
+      <p>
+        Submissions for <em>Interstice</em> are currently closed. Follow us on{' '}
+        <a href={site.instagram} target="_blank" rel="noopener">Instagram</a> to hear when the next call opens.
+      </p>
+    ) : (
+      <dl>
+        <div>
+          <dt>Theme</dt>
+          <dd>{openCall.theme || 'Unfinished ideas and emergent practice'}</dd>
+        </div>
+        {deadline && (
+          <div>
+            <dt>Deadline</dt>
+            <dd>{deadline}</dd>
+          </div>
+        )}
+      </dl>
+    )
+  }
+  {openCall.note && <p class="note-text">{openCall.note}</p>}
+</section>
+
+<style>
+  .open-call {
+    border: 1px solid var(--interstice);
+    border-radius: var(--radius);
+    padding: var(--space-m);
+    background: color-mix(in srgb, var(--interstice) 5%, var(--paper));
+  }
+
+  .status {
+    font-size: 0.72rem;
+    color: var(--interstice);
+    margin: 0 0 0.75rem;
+  }
+
+  .open-call--open .status::before {
+    content: '';
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--interstice);
+    margin-right: 0.5rem;
+    vertical-align: 0.05em;
+  }
+
+  .title {
+    font-size: var(--step-2);
+    margin-bottom: 1rem;
+  }
+
+  dl {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  dt {
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0.15rem 0 0;
+  }
+
+  .note-text {
+    margin-top: 1rem;
+  }
+</style>

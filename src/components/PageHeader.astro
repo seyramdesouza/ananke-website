@@ -1,0 +1,54 @@
+---
+/**
+ * The recurring page opening: small sage label → oversized serif title →
+ * subtitle → large intro paragraph. Children render below the lead.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  lead?: string;
+  size?: 'large' | 'default';
+}
+
+const { eyebrow, title, subtitle, lead, size = 'default' } = Astro.props;
+---
+
+<header class:list={['page-header container', `page-header--${size}`]}>
+  {eyebrow && <p class="eyebrow eyebrow--accent">{eyebrow}</p>}
+  <h1 class="title">{title}</h1>
+  {subtitle && <p class="subtitle">{subtitle}</p>}
+  {lead && <p class="lead page-lead">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .page-header {
+    padding-top: var(--space-m);
+    padding-bottom: var(--space-m);
+  }
+
+  .title {
+    font-size: var(--step-5);
+    line-height: 0.95;
+    max-width: 14ch;
+  }
+
+  .page-header--large .title {
+    font-size: var(--step-giant);
+    max-width: none;
+  }
+
+  .subtitle {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--forest-2);
+    margin-top: 1rem;
+  }
+
+  .page-lead {
+    max-width: 36ch;
+    margin-top: var(--space-m);
+  }
+</style>
