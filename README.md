@@ -64,5 +64,4 @@ functions/api/        GitHub login helper for the CMS (Cloudflare Pages Function
 | Node version | read from `.node-version` (22.12.0) |
 
 For the CMS login, add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` as environment variables,
-and set `repo:` in `public/admin/config.yml` to the real GitHub repository.
-# ananke-website
+and keep `repo:` in `public/admin/config.yml` set to `seyramdesouza/ananke-website`.
